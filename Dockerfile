@@ -9,9 +9,32 @@ LABEL "repository"="http://github.com/mickaelandrieu/psalm-ga"
 LABEL "homepage"="http://github.com/actions"
 LABEL "maintainer"="Mickaël Andrieu <mickael.andrieu@prestashop.com>"
 
-RUN wget https://github.com/vimeo/psalm/releases/download/3.0.10/psalm.phar -O psalm \
-    && chmod a+x psalm \
-    && mv psalm /usr/local/bin/psalm
+#
+# Updated version of phpqa/psalm Docker image.
+#
 
-ADD entrypoint.sh /entrypoint.sh
+# Install Tini - https://github.com/krallin/tini
+
+RUN apk add --no-cache tini
+
+COPY --from=composer:1.8 /usr/bin/composer /usr/bin/composer
+RUN COMPOSER_ALLOW_SUPERUSER=1 \
+    COMPOSER_HOME="/composer" \
+    composer global require --prefer-dist --no-progress --dev vimeo/psalm:3.0.10
+
+ENV PATH /composer/vendor/bin:${PATH}
+
+# Satisfy Psalm's quest for a composer autoloader (with a symlink that disappears once a volume is mounted at /app)
+
+RUN mkdir /app && ln -s /composer/vendor/ /app/vendor
+
+# Add entrypoint script
+
+COPY ./entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Package container
+
+WORKDIR "/app"
 ENTRYPOINT ["/entrypoint.sh"]
+CMD ["psalm"]

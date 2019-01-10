@@ -1,3 +1,12 @@
-#!/bin/sh -l
+#!/usr/bin/env sh
+set -e
 
-sh -c "/usr/local/bin/psalm $*"
+if [ "$(printf %c "$1")" = '-' ]; then
+  set -- /sbin/tini -- php /composer/vendor/bin/psalm "$@"
+elif [ "$1" = "/composer/vendor/bin/psalm" ]; then
+  set -- /sbin/tini -- php "$@"
+elif [ "$1" = "psalm" ]; then
+  set -- /sbin/tini -- php /composer/vendor/bin/"$@"
+fi
+
+exec "$@"
