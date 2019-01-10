@@ -17,6 +17,8 @@ LABEL "maintainer"="Mickaël Andrieu <mickael.andrieu@prestashop.com>"
 
 RUN apk add --no-cache tini
 
+RUN docker-php-ext-install pcntl
+
 COPY --from=composer:1.8 /usr/bin/composer /usr/bin/composer
 RUN COMPOSER_ALLOW_SUPERUSER=1 \
     COMPOSER_HOME="/composer" \
