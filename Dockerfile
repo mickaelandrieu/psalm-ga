@@ -17,12 +17,10 @@ LABEL "maintainer"="Mickaël Andrieu <mickael.andrieu@prestashop.com>"
 
 RUN apk add --no-cache tini
 
-RUN docker-php-ext-install pcntl
-
 COPY --from=composer:1.8 /usr/bin/composer /usr/bin/composer
 RUN COMPOSER_ALLOW_SUPERUSER=1 \
     COMPOSER_HOME="/composer" \
-    composer global require --prefer-dist --no-progress --dev vimeo/psalm:3.0.10
+    composer global require --prefer-dist --no-progress --dev vimeo/psalm:3.0.12
 
 ENV PATH /composer/vendor/bin:${PATH}
 
