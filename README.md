@@ -6,28 +6,32 @@ You can use it as a Github Action like this:
 
 _.github/main.workflow_
 ```
-workflow "Main" {
-  on = "push"
-  resolves = ["Psalm"]
-}
-
-action "Psalm" {
-  uses = "docker://mickaelandrieu/psalm-ga"
-  secrets = ["GITHUB_TOKEN"]
-}
+on: [push]
+	name: Test
+	jobs:
+	    psalm:
+	        name: Psalm
+	        runs-on: ubuntu-latest
+	        steps:
+	            - uses: actions/checkout@master
+	            - name: psalm
+	              uses: docker://mickaelandrieu/psalm-ga
 ```
 
 _to add specific arguments:_
 ```diff
-workflow "Main" {
-  on = "push"
-  resolves = ["Psalm"]
-}
-
-action "Psalm" {
-  uses = "docker://mickaelandrieu/psalm-ga"
-  secrets = ["GITHUB_TOKEN"]
-+  args = "--find-dead-code --threads=8 --diff --diff-methods"
+on: [push]
+	name: Test
+	jobs:
+	    roave_bc_check:
+	        name: Roave BC Check
+	        runs-on: ubuntu-latest
+	        steps:
+	            - uses: actions/checkout@master
+	            - name: Roave BC Check
+	              uses: docker://mickaelandrieu/psalm-ga
++                     with:
++                       args: "--find-dead-code --threads=8 --diff --diff-methods"
 }
 ```
 
