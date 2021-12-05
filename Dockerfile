@@ -20,7 +20,7 @@ RUN apk add --no-cache tini
 COPY --from=composer:1.8 /usr/bin/composer /usr/bin/composer
 RUN COMPOSER_ALLOW_SUPERUSER=1 \
     COMPOSER_HOME="/composer" \
-    composer global require --prefer-dist --no-progress --dev vimeo/psalm:3.0.12
+    composer global require --prefer-dist --no-progress --dev vimeo/psalm:4.14.0
 
 ENV PATH /composer/vendor/bin:${PATH}
 
